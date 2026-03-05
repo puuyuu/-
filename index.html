@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>分菜訓練</title>
+    <title>便當小師傅 - 訓練程式</title>
     <style>
         * { box-sizing: border-box; touch-action: manipulation; }
         body {
-            font-family: sans-serif;
+            font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
             background-color: #fffde7;
             margin: 0;
             display: flex;
@@ -18,199 +18,137 @@
             overflow: hidden;
         }
 
-        /* 標題區：縮小高度 */
+        /* 標題區：更可愛的圓角卡片感 */
         .header {
-            width: 100%;
-            padding: 5px 0;
+            width: 95%;
+            margin: 8px auto;
+            padding: 8px;
+            background: #ffffff;
+            border-radius: 15px;
+            border: 3px solid #ffb74d;
+            box-shadow: 0 4px 0 #ffb74d;
             text-align: center;
         }
-        h1 { margin: 0; font-size: 15px; color: #d84315; }
+        h1 { margin: 0; font-size: 20px; color: #e64a19; display: flex; align-items: center; justify-content: center; gap: 5px; }
         .status-row { 
-            font-size: 18px; 
-            font-weight: bold; 
-            margin-top: 2px; 
-            background: white; 
-            padding: 3px 10px; 
-            border-radius: 8px;
-            border: 2px solid #ffb74d;
+            font-size: 24px; 
+            font-weight: 900; 
+            margin-top: 5px; 
+            color: #4e342e;
         }
 
-        /* 菜盤區：增加彈性空間 */
+        /* 菜盤區：背景透明化，讓刻度更清楚 */
         .kitchen-area {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            gap: 4px;
+            gap: 10px;
             flex: 1;
-            padding: 5px 5px 10px 5px;
-            min-height: 0;
+            padding: 10px 5px 20px 5px;
         }
 
         .dish-group { display: flex; flex-direction: column; align-items: center; height: 100%; }
-        .side-dish { transform: scale(0.8); opacity: 0.7; }
-        .main-dish { transform: scale(1.05); z-index: 10; }
+        .side-dish { transform: scale(0.85); opacity: 0.8; }
+        .main-dish { transform: scale(1.15); z-index: 10; }
 
         .tray-box {
             display: flex;
             align-items: flex-end;
             background: #ffffff; 
-            padding: 2px;
-            border-radius: 4px;
-            border: 2px solid #5d4037;
-            height: 90%; /* 讓菜盤拉長 */
+            padding: 3px;
+            border-radius: 8px;
+            border: 3px solid #6d4c41;
+            height: 90%;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         }
 
         .ruler {
             height: 100%;
             display: flex;
-            flex-direction: column-reverse; /* 確保由下而上：0, 5, 10... */
+            flex-direction: column-reverse;
             justify-content: space-between;
-            font-size: 12px;
-            padding-right: 3px;
+            font-size: 14px;
+            padding-right: 5px;
             font-weight: 900;
-            border-right: 2px solid #5d4037;
+            border-right: 2px solid #6d4c41;
             color: #000;
         }
-        .ruler div { height: 0; display: flex; align-items: center; justify-content: flex-end; }
 
         .tray {
-            width: 40px;
+            width: 45px;
             height: 100%;
             background: #ffffff; 
             position: relative;
             display: flex;
             flex-direction: column-reverse;
             overflow: hidden; 
-            border: 1px solid #8d6e63;
+            border: 1px solid #d7ccc8;
         }
-        .main-dish .tray { width: 85px; border: 2px solid #4caf50; }
+        .main-dish .tray { width: 95px; border: 3px solid #4caf50; }
 
-        .food { width: 100%; transition: height 0.3s ease-out; }
-        .tofu { background: #ffb74d; }
-        .cabbage { background: #4caf50; }
-        .veggie { background: #81c784; }
+        .food { width: 100%; transition: height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .tofu { background: #ffb74d; border-top: 2px solid #f57c00; }
+        .cabbage { background: #66bb6a; border-top: 2px solid #2e7d32; }
+        .veggie { background: #81c784; border-top: 2px solid #388e3c; }
 
-        .dish-name { margin-top: 4px; font-size: 13px; font-weight: bold; background: #fff; padding: 1px 5px; border-radius: 6px; border: 1px solid #ccc; }
+        .dish-name { 
+            margin-top: 8px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            background: #fff; 
+            padding: 4px 12px; 
+            border-radius: 20px; 
+            border: 2px solid #ffb74d;
+            color: #5d4037;
+            box-shadow: 0 2px 0 #ffb74d;
+        }
 
-        /* 操作面板：大幅壓縮高度 */
+        /* 下方操作面板：可愛大按鈕 */
         .control-card {
-            background: #fff;
+            background: #ffffff;
             width: 100%;
-            padding: 8px 10px 15px 10px; /* 縮減內距 */
-            border-radius: 20px 20px 0 0;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            padding: 15px 10px 25px 10px;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
             text-align: center;
-            border-top: 4px solid #4caf50;
+            border-top: 8px solid #4caf50;
         }
-        .counter-tool { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 5px; }
+        .counter-tool { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 15px; }
+        
         .btn-circle {
-            width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 32px;
-            color: white; background: #42a5f5; font-weight: bold; box-shadow: 0 3px #1976d2;
+            width: 75px; height: 75px; border-radius: 50%; border: none; font-size: 45px;
+            color: white; background: #42a5f5; font-weight: bold; 
+            box-shadow: 0 6px 0 #1976d2;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-minus { background: #ffa726; box-shadow: 0 3px #f57c00; }
-        #scoop-display { font-size: 40px; font-weight: bold; min-width: 85px; }
+        .btn-circle:active { transform: translateY(4px); box-shadow: 0 2px 0 #1976d2; }
+        .btn-minus { background: #ffa726; box-shadow: 0 6px 0 #f57c00; }
+        .btn-minus:active { box-shadow: 0 2px 0 #f57c00; }
+
+        #scoop-display { font-size: 60px; font-weight: 900; min-width: 130px; color: #212121; text-shadow: 2px 2px 0 rgba(0,0,0,0.05); }
         
         .btn-confirm {
-            background: #2ecc71; color: white; border: none; padding: 10px;
-            font-size: 20px; font-weight: bold; border-radius: 25px; width: 80%;
-            box-shadow: 0 4px #27ae60;
+            background: #2ecc71; color: white; border: none; padding: 18px;
+            font-size: 32px; font-weight: 900; border-radius: 50px; width: 90%;
+            box-shadow: 0 8px 0 #27ae60;
+            margin-bottom: 5px;
         }
+        .btn-confirm:active { transform: translateY(4px); box-shadow: 0 4px 0 #27ae60; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>🍱 便當分菜小師傅</h1>
+    <h1>🍱 便當分菜小師傅 🍱</h1>
     <div class="status-row">
-        需做：<span id="total-bento" style="color:red">--</span> 盒 | 第 <span id="current-bento" style="color:blue">--</span> 盒
+        需做：<span id="total-bento" style="color:#d84315">--</span> 盒 | 第 <span id="current-bento" style="color:#1976d2">--</span> 盒
     </div>
 </div>
 
 <div class="kitchen-area">
     <div class="dish-group side-dish">
         <div class="tray-box"><div class="ruler" id="r0"></div><div class="tray"><div id="food-0" class="food tofu"></div></div></div>
-        <div class="dish-name">豆腐</div>
+        <div class="dish-name">滷豆腐</div>
     </div>
     <div class="dish-group main-dish">
-        <div class="tray-box"><div class="ruler" id="r1"></div><div class="tray"><div id="food-1" class="food cabbage"></div></div></div>
-        <div class="dish-name" style="color:#2e7d32">高麗菜</div>
-    </div>
-    <div class="dish-group side-dish">
-        <div class="tray-box"><div class="ruler" id="r2"></div><div class="tray"><div id="food-2" class="food veggie"></div></div></div>
-        <div class="dish-name">青菜</div>
-    </div>
-</div>
-
-<div class="control-card">
-    <div class="counter-tool">
-        <button class="btn-circle btn-minus" onclick="changeScoop(-0.5)">－</button>
-        <div id="scoop-display">1.5</div>
-        <button class="btn-circle btn-plus" onclick="changeScoop(0.5)">＋</button>
-    </div>
-    <button class="btn-confirm" onclick="doScoop()">確定打菜！</button>
-</div>
-
-<script>
-    let total = 0, current = 1, scoopValue = 1.5;
-    let foods = [{id:'food-0',start:0,curr:0},{id:'food-1',start:0,curr:0},{id:'food-2',start:0,curr:0}];
-
-    function buildRulers() {
-        ['r0', 'r1', 'r2'].forEach(id => {
-            const r = document.getElementById(id);
-            r.innerHTML = '';
-            // 強制生成從 0 到 50 的刻度
-            const labels = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-            labels.forEach(val => {
-                const step = document.createElement('div');
-                step.innerText = val;
-                r.appendChild(step);
-            });
-        });
-    }
-
-    function initGame() {
-        total = Math.floor(Math.random() * 5) + 4;
-        current = 1;
-        foods.forEach(f => {
-            f.start = Math.floor(Math.random() * 21) + 25;
-            f.curr = f.start;
-        });
-        document.getElementById('total-bento').innerText = total;
-        updateUI();
-    }
-
-    function changeScoop(v) {
-        scoopValue = Math.max(0.5, scoopValue + v);
-        document.getElementById('scoop-display').innerText = scoopValue.toFixed(1);
-    }
-
-    function updateUI() {
-        document.getElementById('current-bento').innerText = current;
-        document.getElementById('scoop-display').innerText = scoopValue.toFixed(1);
-        foods.forEach((f, i) => {
-            let h = (i===1) ? (f.curr/50*100) : ((f.start-(current-1)*(f.start/total))/50*100);
-            document.getElementById(f.id).style.height = h + '%';
-        });
-    }
-
-    function doScoop() {
-        if (foods[1].curr < scoopValue) {
-            alert("菜不夠分了！");
-            initGame();
-            return;
-        }
-        foods[1].curr = parseFloat((foods[1].curr - scoopValue).toFixed(1));
-        if (current >= total) {
-            alert(foods[1].curr <= 1.5 ? "大成功！分得非常精準！" : "剩下 " + foods[1].curr + " 格，可以再分勻一點。");
-            initGame();
-        } else {
-            current++;
-            updateUI();
-        }
-    }
-
-    buildRulers();
-    initGame();
-</script>
-</body>
-</html>
+        <div class="tray-box"><div class="ruler"
