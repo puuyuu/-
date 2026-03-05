@@ -18,31 +18,32 @@
             overflow: hidden;
         }
 
+        /* 標題區：縮小高度 */
         .header {
             width: 100%;
-            padding: 8px 0;
+            padding: 5px 0;
             text-align: center;
         }
-        h1 { margin: 0; font-size: 16px; color: #d84315; }
+        h1 { margin: 0; font-size: 15px; color: #d84315; }
         .status-row { 
-            font-size: 20px; 
+            font-size: 18px; 
             font-weight: bold; 
-            margin-top: 3px; 
+            margin-top: 2px; 
             background: white; 
-            padding: 4px 12px; 
+            padding: 3px 10px; 
             border-radius: 8px;
             border: 2px solid #ffb74d;
         }
 
-        /* 菜盤區區塊 */
+        /* 菜盤區：增加彈性空間 */
         .kitchen-area {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            gap: 5px;
+            gap: 4px;
             flex: 1;
-            padding: 5px 5px 15px 5px;
-            min-height: 0; /* 允許彈性縮小 */
+            padding: 5px 5px 10px 5px;
+            min-height: 0;
         }
 
         .dish-group { display: flex; flex-direction: column; align-items: center; height: 100%; }
@@ -56,21 +57,21 @@
             padding: 2px;
             border-radius: 4px;
             border: 2px solid #5d4037;
-            height: 85%;
+            height: 90%; /* 讓菜盤拉長 */
         }
 
         .ruler {
             height: 100%;
             display: flex;
-            flex-direction: column-reverse; /* 關鍵修正：由下而上排列 */
+            flex-direction: column-reverse; /* 確保由下而上：0, 5, 10... */
             justify-content: space-between;
-            font-size: 13px;
-            padding-right: 4px;
+            font-size: 12px;
+            padding-right: 3px;
             font-weight: 900;
             border-right: 2px solid #5d4037;
             color: #000;
         }
-        .ruler div { line-height: 1; }
+        .ruler div { height: 0; display: flex; align-items: center; justify-content: flex-end; }
 
         .tray {
             width: 40px;
@@ -89,31 +90,30 @@
         .cabbage { background: #4caf50; }
         .veggie { background: #81c784; }
 
-        .dish-name { margin-top: 5px; font-size: 14px; font-weight: bold; background: #fff; padding: 1px 6px; border-radius: 8px; border: 1px solid #ccc; }
+        .dish-name { margin-top: 4px; font-size: 13px; font-weight: bold; background: #fff; padding: 1px 5px; border-radius: 6px; border: 1px solid #ccc; }
 
-        /* 下方操作區塊：大幅壓縮 */
+        /* 操作面板：大幅壓縮高度 */
         .control-card {
             background: #fff;
             width: 100%;
-            padding: 10px 10px env(safe-area-inset-bottom);
+            padding: 8px 10px 15px 10px; /* 縮減內距 */
             border-radius: 20px 20px 0 0;
             box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
             text-align: center;
-            border-top: 5px solid #4caf50;
+            border-top: 4px solid #4caf50;
         }
-        .counter-tool { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 8px; }
+        .counter-tool { display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 5px; }
         .btn-circle {
-            width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 35px;
+            width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 32px;
             color: white; background: #42a5f5; font-weight: bold; box-shadow: 0 3px #1976d2;
         }
         .btn-minus { background: #ffa726; box-shadow: 0 3px #f57c00; }
-        #scoop-display { font-size: 45px; font-weight: bold; min-width: 90px; }
+        #scoop-display { font-size: 40px; font-weight: bold; min-width: 85px; }
         
         .btn-confirm {
-            background: #2ecc71; color: white; border: none; padding: 12px;
-            font-size: 22px; font-weight: bold; border-radius: 30px; width: 85%;
+            background: #2ecc71; color: white; border: none; padding: 10px;
+            font-size: 20px; font-weight: bold; border-radius: 25px; width: 80%;
             box-shadow: 0 4px #27ae60;
-            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -158,11 +158,13 @@
         ['r0', 'r1', 'r2'].forEach(id => {
             const r = document.getElementById(id);
             r.innerHTML = '';
-            for(let i=0; i<=50; i+=5) { // 從 0 到 50 產生
+            // 強制生成從 0 到 50 的刻度
+            const labels = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
+            labels.forEach(val => {
                 const step = document.createElement('div');
-                step.innerText = i;
+                step.innerText = val;
                 r.appendChild(step);
-            }
+            });
         });
     }
 
@@ -199,7 +201,7 @@
         }
         foods[1].curr = parseFloat((foods[1].curr - scoopValue).toFixed(1));
         if (current >= total) {
-            alert(foods[1].curr <= 1.5 ? "大成功！精準分完！" : "剩下 " + foods[1].curr + " 格，加油！");
+            alert(foods[1].curr <= 1.5 ? "大成功！分得非常精準！" : "剩下 " + foods[1].curr + " 格，可以再分勻一點。");
             initGame();
         } else {
             current++;
