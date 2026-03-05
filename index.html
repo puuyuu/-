@@ -17,37 +17,50 @@
             overflow: hidden;
         }
 
-        /* 上方標題區 */
+        /* 1. 修正標題區：固定在最上方，確保不被擋住 */
         .header {
             width: 100%;
             padding: 10px 0;
             text-align: center;
+            background: #fffde7; /* 與背景同色但確保層級 */
+            z-index: 100; /* 最高層級，防止被擋 */
+            position: relative;
         }
         h1 { margin: 0; font-size: 18px; color: #d84315; }
-        .status-row { font-size: 24px; font-weight: bold; margin-top: 5px; }
+        .status-row { 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-top: 5px; 
+            background: white; 
+            display: inline-block; 
+            padding: 5px 15px; 
+            border-radius: 10px;
+            border: 2px solid #ffb74d;
+        }
 
-        /* 菜盤區：確保白色背景完全遮蓋 */
+        /* 2. 菜盤區：向下平移，避免撞到標題 */
         .kitchen-area {
             display: flex;
             justify-content: center;
             align-items: flex-end;
             gap: 8px;
             flex: 1;
-            padding-bottom: 20px;
+            padding: 10px 5px 30px 5px; /* 增加底部間距 */
+            margin-top: 5px;
         }
 
-        .dish-group { display: flex; flex-direction: column; align-items: center; height: 100%; }
+        .dish-group { display: flex; flex-direction: column; align-items: center; height: 95%; }
         .side-dish { transform: scale(0.85); opacity: 0.7; }
         .main-dish { transform: scale(1.1); z-index: 10; }
 
         .tray-box {
             display: flex;
             align-items: flex-end;
-            background: #ffffff; /* 確保外框底色是純白 */
+            background: #ffffff; 
             padding: 3px;
             border-radius: 4px;
             border: 2px solid #5d4037;
-            height: 85%;
+            height: 80%; /* 稍微縮短一點點高度，避免頂到天花板 */
         }
 
         .ruler {
@@ -62,20 +75,18 @@
             color: #000;
         }
 
-        /* 關鍵修正：tray 必須是純白色背景 */
         .tray {
             width: 45px;
             height: 100%;
-            background: #ffffff; /* 這裡改為純白色，蓋住綠色以外的部分 */
+            background: #ffffff; 
             position: relative;
             display: flex;
             flex-direction: column-reverse;
-            overflow: hidden; /* 確保菜色不會溢出 */
+            overflow: hidden; 
             border: 1px solid #8d6e63;
         }
         .main-dish .tray { width: 95px; border: 2px solid #4caf50; }
 
-        /* 菜色顯示 */
         .food { width: 100%; transition: height 0.3s ease-out; }
         .tofu { background: #ffb74d; }
         .cabbage { background: #4caf50; }
@@ -83,22 +94,22 @@
 
         .dish-name { margin-top: 8px; font-size: 16px; font-weight: bold; background: #fff; padding: 2px 8px; border-radius: 10px; border: 1px solid #ccc; }
 
-        /* 下方操作區塊 */
+        /* 3. 下方操作區塊 */
         .control-card {
             background: #fff;
             width: 100%;
-            padding: 15px 10px 30px 10px;
+            padding: 15px 10px 35px 10px;
             border-radius: 25px 25px 0 0;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
             text-align: center;
             border-top: 6px solid #4caf50;
+            z-index: 101;
         }
         .counter-tool { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 15px; }
         .btn-circle {
-            width: 75px; height: 75px; border-radius: 50%; border: none; font-size: 45px;
+            width: 70px; height: 70px; border-radius: 50%; border: none; font-size: 45px;
             color: white; background: #42a5f5; font-weight: bold; box-shadow: 0 4px #1976d2;
         }
-        .btn-circle:active { transform: translateY(2px); box-shadow: 0 2px #1976d2; }
         .btn-minus { background: #ffa726; box-shadow: 0 4px #f57c00; }
         #scoop-display { font-size: 60px; font-weight: bold; min-width: 120px; }
         .btn-confirm {
@@ -106,7 +117,6 @@
             font-size: 28px; font-weight: bold; border-radius: 40px; width: 90%;
             box-shadow: 0 5px #27ae60;
         }
-        .btn-confirm:active { transform: translateY(3px); box-shadow: 0 2px #27ae60; }
     </style>
 </head>
 <body>
@@ -148,8 +158,7 @@
     let foods = [{id:'food-0',start:0,curr:0},{id:'food-1',start:0,curr:0},{id:'food-2',start:0,curr:0}];
 
     function buildRulers() {
-        const ids = ['r0', 'r1', 'r2'];
-        ids.forEach(id => {
+        ['r0', 'r1', 'r2'].forEach(id => {
             const r = document.getElementById(id);
             r.innerHTML = '';
             for(let i=50; i>=0; i-=5) {
@@ -180,7 +189,6 @@
         document.getElementById('current-bento').innerText = current;
         document.getElementById('scoop-display').innerText = scoopValue.toFixed(1);
         foods.forEach((f, i) => {
-            // 計算高度百分比
             let h = (i===1) ? (f.curr/50*100) : ((f.start-(current-1)*(f.start/total))/50*100);
             document.getElementById(f.id).style.height = h + '%';
         });
@@ -194,7 +202,7 @@
         }
         foods[1].curr = parseFloat((foods[1].curr - scoopValue).toFixed(1));
         if (current >= total) {
-            alert(foods[1].curr <= 1.5 ? "太棒了！精準分完！" : "剩菜還有 " + foods[1].curr + " 格，加油！");
+            alert(foods[1].curr <= 1.5 ? "大成功！分得非常精準！" : "剩下 " + foods[1].curr + " 格，可以再分勻一點。");
             initGame();
         } else {
             current++;
